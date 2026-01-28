@@ -13,7 +13,7 @@ try:
     from itertools import izip_longest
 except ImportError:
     from itertools import zip_longest as izip_longest
-import collections
+
 
 import six
 
@@ -95,7 +95,7 @@ class prog(object):
 
     def command(self, *args, **kwargs):
         """Convenient decorator simply creates corresponding command"""
-        if len(args) == 1 and isinstance(args[0], collections.Callable):
+        if len(args) == 1 and six.callable(args[0]):
             return self._generate_command(args[0])
         else:
             def _command(func):
@@ -146,7 +146,7 @@ class prog(object):
         subparser = self.subparsers.add_parser(name or func.__name__,
                                                aliases=aliases,
                                                help=func_help)
-        spec = inspect.getargspec(func)
+        spec = inspect.getfullargspec(func)
         opts = reversed(list(izip_longest(reversed(spec.args or []),
                                           reversed(spec.defaults or []),
                                           fillvalue=self._POSITIONAL())))
